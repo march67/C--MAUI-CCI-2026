@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -73,7 +74,7 @@ namespace Morpion
 
             DisplayBoard();
 
-            if (CheckWinCondition() == false)
+            if (CheckWinCondition() == false && CheckEndGame() == false)
             {
                 ChangePlayerTurn();
             }
@@ -81,6 +82,9 @@ namespace Morpion
 
         private void ChangePlayerTurn()
         {
+            int row;
+            int column;
+
             if (currentPlayer == PlayerType.X && isFirstTurn == false)
             {
                 currentPlayer = PlayerType.O;
@@ -94,10 +98,16 @@ namespace Morpion
             }
 
             Console.Write("Entrez la ligne : ");
-            int row = int.Parse(Console.ReadLine());
+            while (!int.TryParse(Console.ReadLine(), out row))
+            {
+                Console.Write("Saisie invalide. Entrez la ligne : ");
+            }
 
             Console.Write("Entrez la colonne : ");
-            int column = int.Parse(Console.ReadLine());
+            while (!int.TryParse(Console.ReadLine(), out column))
+            {
+                Console.Write("Saisie invalide. Entrez la colonne : ");
+            }
 
             Input(row, column, currentPlayer);
         }
@@ -134,8 +144,24 @@ namespace Morpion
                 Console.Write($"Le joueur : " + symbolWinner + " a gagné");
                 return true;
             }
-
             return false;
+        }
+
+        private bool CheckEndGame()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (board[i, j] == ' ')
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            Console.Write($"Fin de partie, aucun gagnant");
+            return true;
         }
     }
 }
