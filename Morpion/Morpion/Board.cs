@@ -19,7 +19,7 @@ namespace Morpion
         const string verticalSeparator = "|";
         const string horizontalSeparator = "------";
 
-        public bool isFirstTurn = true;
+        private bool isFirstTurn = true;
         private PlayerType currentPlayer = PlayerType.X;
 
         private char[,] board;
@@ -74,7 +74,7 @@ namespace Morpion
 
             DisplayBoard();
 
-            if (CheckWinCondition() == false && CheckEndGame() == false)
+            if (!CheckWinCondition() && !CheckEndGame())
             {
                 ChangePlayerTurn();
             }
@@ -85,7 +85,7 @@ namespace Morpion
             int row;
             int column;
 
-            if (currentPlayer == PlayerType.X && isFirstTurn == false)
+            if (currentPlayer == PlayerType.X && !isFirstTurn)
             {
                 currentPlayer = PlayerType.O;
                 Console.WriteLine("Tour du joueur 2");
@@ -134,7 +134,6 @@ namespace Morpion
         {
             for (int j = 0; j < 3; j++)
             {
-                // Check all columns
                 if (board[0, j] == board[1, j] && board[1, j] == board[2, j] && board[0, j] != ' ')
                 {
                     char symbolWinner = (board[0, j]);
@@ -150,7 +149,6 @@ namespace Morpion
         {
             for (int i = 0; i < 3; i++)
             {
-                // Check all rows
                 if (board[i, 0] == board[i, 1] && board[i, 0] == board[i, 2] && board[i, 0] != ' ')
                 {
                     char symbolWinner = board[i, 0];
