@@ -1,7 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Morpion;
-
-Console.WriteLine("Hello, World!");
+﻿using Morpion;
 
 Board board = new Board();
 
