@@ -1,5 +1,6 @@
 ﻿using Morpion;
 
-Board board = new Board();
+Game game = new Game();
+game.StartGame();
 
 Console.ReadLine();
