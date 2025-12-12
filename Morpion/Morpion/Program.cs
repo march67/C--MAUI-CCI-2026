@@ -3,6 +3,6 @@ ConsoleWrapper console = new ConsoleWrapper();
 
 Game game = new Game(console);
 
-game.StartGame();
+await game.StartGame();
 
 Console.ReadLine();

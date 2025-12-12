@@ -24,7 +24,7 @@ namespace Morpion
             _console = console;
         }
 
-        public void StartGame()
+        public async Task StartGame()
         {
             ChooseTypeOfGame();
 
@@ -39,7 +39,7 @@ namespace Morpion
             while (!board.CheckWinCondition(CurrentPlayerToPlay.GetPlayerName()) && !board.CheckEndGame())
             {
                 ChangePlayerTurn();
-                board.InputMoveOnBoard(CurrentPlayerToPlay.PlayerInput(board));
+                board.InputMoveOnBoard(await CurrentPlayerToPlay.PlayerInput(board));
                 board.DisplayBoard();
             }
 
@@ -49,20 +49,20 @@ namespace Morpion
         private void ChooseTypeOfGame()
         {
             PlayerList.Clear();
-            char? input;
+            string input;
             do
             {
                 Console.Write("Choisissez '1' pour jouer contre un autre humain, '2' pour jouer contre un bot\n");
-                input = Console.ReadLine()[0];
+                input = Console.ReadLine();
 
 
-            } while (input != '1' && input != '2');
+            } while (input != "1" && input != "2");
 
-            if (input == '1')
+            if (input == "1")
             {
                 InitializeTwoHumanPlayers();
             }
-            else if (input == '2')
+            else if (input == "2")
             {
                 InitializeHumanVsBotPlayers();
             }

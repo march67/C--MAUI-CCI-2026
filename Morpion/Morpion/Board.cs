@@ -10,8 +10,6 @@ namespace Morpion
 {
     public class Board
     {
-        private readonly IPlayer _player;
-
         const string VerticalSeparator = "|";
         const string HorizontalSeparator = "------";
 

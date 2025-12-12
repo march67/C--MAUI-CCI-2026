@@ -33,8 +33,10 @@ namespace Morpion
             return this.HumanSymbol;
         }
 
-        public (int, int, char) PlayerInput(Board board)
+        public async Task<(int, int, char)> PlayerInput(Board board)
         {
+            await Task.CompletedTask;
+
             int rowInput;
             int columnInput;
 
@@ -58,7 +60,7 @@ namespace Morpion
             Console.WriteLine("\nVeuillez choisir une cellule vide");
 
             Console.Write("\n");
-
+            
             return (rowInput, columnInput, GetPlayerSymbol());
         }
     }

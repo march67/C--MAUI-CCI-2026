@@ -33,7 +33,7 @@ namespace Morpion
             return this.BotSymbol;
         }
 
-        public (int, int, char) PlayerInput(Board boardGame)
+        public async Task<(int, int, char)> PlayerInput(Board boardGame)
         {
             int rowInput;
             int columnInput;
@@ -48,6 +48,10 @@ namespace Morpion
                 columnInput = random.Next(boardGame.board.GetLength(1));
 
             } while (!boardGame.CheckValidCellForInput(rowInput, columnInput, this));
+
+            Console.WriteLine($"\nLAISSE " + GetPlayerName() + " RÉFLÉCHIR !" +
+                "");
+            await Task.Delay(2000); // Délai de réflexion de 2 secondes pour le BOT
 
             Console.Write("\n");
 
