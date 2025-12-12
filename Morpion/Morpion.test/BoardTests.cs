@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Morpion;
 
 namespace Morpion.test
@@ -9,9 +10,12 @@ namespace Morpion.test
         {
             // Arrange
             var board = new Board();
+            board.InputMoveOnBoard((1, 1, 'X'));
+            board.InputMoveOnBoard((2, 2, 'X'));
+            board.InputMoveOnBoard((3, 3, 'X'));
 
             // Act
-            var result = board.CheckWinCondition();
+            var result = board.CheckWinCondition("David");
 
             // Assert
             result.Should().BeTrue();
