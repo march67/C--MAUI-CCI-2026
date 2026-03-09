@@ -14,11 +14,6 @@ namespace Morpion
         public List<IPlayer> PlayerList = new List<IPlayer>();
         bool Restart = false;
 
-        public Game()
-        {
-
-        }
-
         public Game(IConsoleWrapper console)
         {
             _console = console;
@@ -112,8 +107,7 @@ namespace Morpion
         public void InitializeHumanVsBotPlayers()
         {
             string? input;
-
-
+            
             _console.Write("Joueur 1, veuillez saisir votre prénom\n");
             do
             {
