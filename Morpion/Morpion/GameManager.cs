@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Morpion.Application.GameUseCases;
+﻿using Morpion.Application.GameUseCases;
 using Morpion.Application.PlayerUseCases;
 using Morpion.Domain.Entities;
-using Morpion.Infrastructure.Persistance;
-using Morpion.Infrastructure.Persistance.Repositories;
+
 
 namespace Morpion
 {
@@ -35,8 +28,6 @@ namespace Morpion
         public async Task StartGame()
         {
             await ChooseTypeOfGame();
-
-            Console.Clear();
 
             Board board = new Board();
 
@@ -125,6 +116,7 @@ namespace Morpion
             
             _currentGame = Game.Create(Player1, Player2);
             _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
+            await _gameStartUseCase.ShowPlayersResult(Player1, Player2);
         }
 
         public async Task InitializeHumanVsBotPlayers()
@@ -164,6 +156,7 @@ namespace Morpion
             
             _currentGame = Game.Create(Player1, Player2);
             _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
+            await _gameStartUseCase.ShowPlayersResult(Player1, Player2);
         }
 
         public void GameEnded()
@@ -232,6 +225,11 @@ namespace Morpion
                 _currentGame.SetResult(winnerEntity, loserEntity);
                 await _gameStartUseCase.UpdateGame(_currentGame);
             }
+        }
+
+        private async Task ShowPlayersResult()
+        {
+            
         }
     }
 }

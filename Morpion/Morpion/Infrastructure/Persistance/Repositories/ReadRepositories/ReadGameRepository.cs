@@ -17,4 +17,14 @@ public class ReadGameRepository : IReadGameRepository
     {
         return await _dbContext.Games.FirstOrDefaultAsync(g => g.IsCompleted == false);
     }
+
+    public async Task<int> NumberOfGamePlayedByPlayer(Player player)
+    {
+        return await _dbContext.Games.CountAsync(g => g.Winner == player || g.Loser == player);
+    }
+
+    public async Task<int> NumberOfGameWonByPlayer(Player player)
+    {
+        return await _dbContext.Games.CountAsync(g => g.Winner == player );
+    }
 }

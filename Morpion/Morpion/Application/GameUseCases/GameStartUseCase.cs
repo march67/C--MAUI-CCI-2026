@@ -31,6 +31,15 @@ public class GameStartUseCase
         await _writeGameRepository.UpdateAsync(game);
     }
 
+    public async Task ShowPlayersResult(Player player1, Player player2 )
+    {
+        int winCountPlayer1 = await _readGameRepository.NumberOfGamePlayedByPlayer(player1);
+        int winCountPlayer2 = await _readGameRepository.NumberOfGamePlayedByPlayer(player2);
+        
+        Console.WriteLine($"Nombre de partie jouées par " + player1.Name + " : " + winCountPlayer1);
+        Console.WriteLine($"Nombre de partie jouées par " + player2.Name + " : " + winCountPlayer2);
+    }
+
     public void RetrieveOngoingGameState(Game game)
     {
         // to do
