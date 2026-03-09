@@ -107,11 +107,11 @@ namespace Morpion
 
         }
 
-        public bool CheckValidCellForInput(int row, int column, IPlayer player)
+        public bool CheckValidCellForInput(int row, int column, IPlayerManager playerManager)
         {
             if (board[row, column] != ' ')
             {
-                if (player is HumanPlayer)
+                if (playerManager is HumanPlayerManager)
                 {
                     Console.WriteLine("\nVeuillez choisir une cellule vide");
                 }

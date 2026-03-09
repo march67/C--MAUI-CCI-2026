@@ -7,4 +7,14 @@ public class Player
     public bool IsHuman  { get; set; }
     
     private Player() { }
+
+    public static Player Create(string name, bool isHuman)
+    {
+        return new Player
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            IsHuman = isHuman
+        };
+    }
 }

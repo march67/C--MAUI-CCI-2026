@@ -6,7 +6,7 @@ namespace Morpion.test
 {
     public class BoardTests
     {
-        // faire les tests de manière progressive
+        // faire les tests de maniï¿½re progressive
         public class FakeBoardWithDiagonalWin : Board
         {
             public override bool CheckDiagonalWinCondition() => true;
@@ -28,7 +28,7 @@ namespace Morpion.test
         {
             // Arrange -
             var board = new Board(); // Tester si la grille est vide
-            board.InputMoveOnBoard((1, 1, 'X')); // Commencer par tester cette méthode
+            board.InputMoveOnBoard((1, 1, 'X')); // Commencer par tester cette mï¿½thode
             board.InputMoveOnBoard((2, 2, 'X'));
             board.InputMoveOnBoard((3, 3, 'X'));
 
@@ -205,12 +205,12 @@ namespace Morpion.test
         {
             // Arrange
             Board board = new Board();
-            HumanPlayer player = new HumanPlayer();
+            HumanPlayerManager playerManager = new HumanPlayerManager();
             board.InputMoveOnBoard((rowInput_1, columnInput_1, 'X'));
 
             // Act
-                // - 1 car commence décalage par rapport à InputMoveOnBoard qui est plus 'humainement logique' ligne 1 = 1 et pas 0
-            var result = board.CheckValidCellForInput(rowInput_2 - 1, columnInput_2 - 1, player);
+                // - 1 car commence dï¿½calage par rapport ï¿½ InputMoveOnBoard qui est plus 'humainement logique' ligne 1 = 1 et pas 0
+            var result = board.CheckValidCellForInput(rowInput_2 - 1, columnInput_2 - 1, playerManager);
 
             // Assert
             result.Should().Be(expectedResult);

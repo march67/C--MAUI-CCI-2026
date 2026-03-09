@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Morpion
 {
-    public class BotPlayer : IPlayer
+    public class BotPlayerManager : IPlayerManager
     {
 
         public char BotSymbol;

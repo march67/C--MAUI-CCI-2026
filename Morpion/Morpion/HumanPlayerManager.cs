@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Morpion
 {
-    public class HumanPlayer : IPlayer
+    public class HumanPlayerManager : IPlayerManager
     {
         public char HumanSymbol;
 

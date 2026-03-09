@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Morpion
 {
-    public interface IPlayer
+    public interface IPlayerManager
     {
         bool CheckPlayerName();
 

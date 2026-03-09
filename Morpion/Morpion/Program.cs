@@ -3,7 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Morpion;
+using Morpion.Application.PlayerUseCases;
+using Morpion.Domain.Repositories.Player;
 using Morpion.Infrastructure.Persistance;
+using Morpion.Infrastructure.Persistance.Repositories;
+using Morpion.Infrastructure.Persistance.Repositories.ReadRepositories;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -12,7 +16,10 @@ var builder = Host.CreateDefaultBuilder(args)
             options.UseNpgsql(context.Configuration.GetConnectionString("DefaultConnection")));
         
         services.AddSingleton<IConsoleWrapper, ConsoleWrapper>();
+        services.AddTransient<IWritePlayerRepository, WritePlayerRepository>();
+        services.AddTransient<IReadPlayerRepository, ReadPlayerRepository>();
         services.AddTransient<GameManager>();
+        services.AddTransient<PlayerRegisterUseCase>();
     });
 
 
