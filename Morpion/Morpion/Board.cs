@@ -94,7 +94,7 @@ namespace Morpion
             return false;
         }
 
-        public bool CheckEndGame()
+        public bool CheckDraw()
         {
             bool boardIsFull = board.Cast<char>().All(c => c != ' '); // return un IEnumerable<char> pour pouvoir utiliser .All
             if (boardIsFull)
@@ -104,7 +104,11 @@ namespace Morpion
             }
 
             return boardIsFull;
+        }
 
+        public bool HasWinner()
+        {
+            return CheckRowWinCondition() || CheckColumnWinCondition() || CheckDiagonalWinCondition();
         }
 
         public bool CheckValidCellForInput(int row, int column, IPlayerManager playerManager)

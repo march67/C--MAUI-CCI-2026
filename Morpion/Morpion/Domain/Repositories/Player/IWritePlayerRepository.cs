@@ -2,5 +2,5 @@
 
 public interface IWritePlayerRepository
 {
-    void SaveAsync(Entities.Player player);
+    Task<Entities.Player> SaveAsync(Entities.Player player);
 }

@@ -24,8 +24,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Repositories\Game\" />
-  </ItemGroup>
-
 </Project>

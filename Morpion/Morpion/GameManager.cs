@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Morpion.Application.GameUseCases;
 using Morpion.Application.PlayerUseCases;
 using Morpion.Domain.Entities;
 using Morpion.Infrastructure.Persistance;
@@ -14,21 +15,26 @@ namespace Morpion
     public class GameManager
     {
         private readonly PlayerRegisterUseCase _playerRegisterUseCase;
+        private readonly GameStartUseCase _gameStartUseCase;
         private readonly IConsoleWrapper _console;
+        private Game _currentGame;
         private bool IsFirstTurnOfTheGame = true;
+        private Player Player1;
+        private Player Player2;
         private IPlayerManager _currentPlayerManagerToPlay;
         public List<IPlayerManager> PlayerList = new List<IPlayerManager>();
         bool Restart = false;
 
-        public GameManager(IConsoleWrapper console, PlayerRegisterUseCase playerRegisterUseCase)
+        public GameManager(IConsoleWrapper console, PlayerRegisterUseCase playerRegisterUseCase, GameStartUseCase gameStartUseCase)
         {
             _console = console;
             _playerRegisterUseCase = playerRegisterUseCase;
+            _gameStartUseCase = gameStartUseCase;
         }
 
         public async Task StartGame()
         {
-            ChooseTypeOfGame();
+            await ChooseTypeOfGame();
 
             Console.Clear();
 
@@ -38,17 +44,19 @@ namespace Morpion
 
             board.DisplayBoard();
 
-            while (!board.CheckWinCondition(_currentPlayerManagerToPlay.GetPlayerName()) && !board.CheckEndGame())
+            while (!board.CheckWinCondition(_currentPlayerManagerToPlay.GetPlayerName()) && !board.CheckDraw())
             {
                 ChangePlayerTurn();
                 board.InputMoveOnBoard(await _currentPlayerManagerToPlay.PlayerInput(board));
                 board.DisplayBoard();
             }
 
+            await RecordGameResult(board);
+
             GameEnded();
         }
 
-        private void ChooseTypeOfGame()
+        private async Task ChooseTypeOfGame()
         {
             PlayerList.Clear();
             string input;
@@ -62,16 +70,16 @@ namespace Morpion
 
             if (input == "1")
             {
-                InitializeTwoHumanPlayers();
+                await InitializeTwoHumanPlayers();
             }
             else if (input == "2")
             {
-                InitializeHumanVsBotPlayers();
+                await InitializeHumanVsBotPlayers();
             }
 
         }
 
-        public void InitializeTwoHumanPlayers()
+        public async Task InitializeTwoHumanPlayers()
         {
             string? input;
 
@@ -82,8 +90,8 @@ namespace Morpion
             } while (string.IsNullOrEmpty(input));
             string playerName_1 = input;
             
-            var player_1 = Player.Create(playerName_1, true);
-            _playerRegisterUseCase.Save(player_1);
+            Player1 = Player.Create(playerName_1, true);
+            Player1 = await _playerRegisterUseCase.Save(Player1);
 
             _console.Write("Joueur 1, veuillez saisir votre symbole de jeu\n");
             do
@@ -101,8 +109,8 @@ namespace Morpion
             } while (string.IsNullOrEmpty(input));
             string playerName_2 = input;
             
-            var player_2 = Player.Create(playerName_2, true);
-            _playerRegisterUseCase.Save(player_2);
+            Player2 = Player.Create(playerName_2, true);
+            Player2 = await _playerRegisterUseCase.Save(Player2);
 
             _console.Write("Joueur 2, veuillez saisir votre symbole de jeu\n");
             do
@@ -114,9 +122,12 @@ namespace Morpion
 
             PlayerList.Add(new HumanPlayerManager { HumanName = playerName_1, HumanSymbol = playerSymbol_1 });
             PlayerList.Add(new HumanPlayerManager { HumanName = playerName_2, HumanSymbol = playerSymbol_2 });
+            
+            _currentGame = Game.Create(Player1, Player2);
+            _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
         }
 
-        public void InitializeHumanVsBotPlayers()
+        public async Task InitializeHumanVsBotPlayers()
         {
             string? input;
             
@@ -127,8 +138,8 @@ namespace Morpion
             } while (string.IsNullOrEmpty(input));
             string playerName_1 = input;
             
-            var player_1 = Player.Create(playerName_1, true);
-            _playerRegisterUseCase.Save(player_1);
+            Player1 = Player.Create(playerName_1, true);
+            Player1 = await _playerRegisterUseCase.Save(Player1);
 
             _console.Write("Joueur 1, veuillez saisir votre symbole de jeu\n");
             do
@@ -145,11 +156,14 @@ namespace Morpion
             string botName = botNames[random.Next(botNames.Length)]; // Next génère un entier aléatoire compris entre 0 et la maxValue en argument
             char botSymbol = availableSymbols[random.Next(availableSymbols.Length)];
             
-            var player_2 = Player.Create(botName, false);
-            _playerRegisterUseCase.Save(player_2);
+            Player2 = Player.Create(botName, false);
+            Player2 = await _playerRegisterUseCase.Save(Player2);
 
             PlayerList.Add(new HumanPlayerManager { HumanName = playerName_1, HumanSymbol = playerSymbol_1 });
             PlayerList.Add(new BotPlayerManager { BotName = botName, BotSymbol  = botSymbol });
+            
+            _currentGame = Game.Create(Player1, Player2);
+            _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
         }
 
         public void GameEnded()
@@ -194,6 +208,30 @@ namespace Morpion
             Random random = new Random();
             int index = random.Next(playerList.Count);
             _currentPlayerManagerToPlay = playerList[index];
+        }
+        
+        private async Task RecordGameResult(Board board)
+        {
+            if (board.HasWinner())
+            {
+                var winnerName = _currentPlayerManagerToPlay.GetPlayerName();
+
+                Player winnerEntity, loserEntity;
+        
+                if (Player1.Name == winnerName)
+                {
+                    winnerEntity = Player1;
+                    loserEntity = Player2;
+                }
+                else
+                {
+                    winnerEntity = Player2;
+                    loserEntity = Player1;
+                }
+        
+                _currentGame.SetResult(winnerEntity, loserEntity);
+                await _gameStartUseCase.UpdateGame(_currentGame);
+            }
         }
     }
 }

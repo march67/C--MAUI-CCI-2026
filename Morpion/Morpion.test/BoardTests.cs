@@ -177,7 +177,7 @@ namespace Morpion.test
             board.InputMoveOnBoard((3, 3, 'X'));
 
             // Act
-            var result = board.CheckEndGame();
+            var result = board.CheckDraw();
 
             // Assert
             result.Should().BeTrue();
@@ -191,7 +191,7 @@ namespace Morpion.test
             board.InputMoveOnBoard((1, 1, 'X'));
 
             // Act
-            var result = board.CheckEndGame();
+            var result = board.CheckDraw();
 
             // Assert
             result.Should().BeFalse();

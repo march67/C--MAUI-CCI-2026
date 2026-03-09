@@ -14,12 +14,15 @@ public class PlayerRegisterUseCase
         _readPlayerRepository = readPlayerRepository;
     }
 
-    public async void Save(Player playerToSave)
+    public async Task<Player> Save(Player playerToSave)
     {
         Player player = await _readPlayerRepository.FindByNameAsync(playerToSave.Name);
         if (player == null)
         {
-            _writePlayerRepository.SaveAsync(playerToSave);
+            await _writePlayerRepository.SaveAsync(playerToSave);
+            return playerToSave;
         }
+
+        return player;
     }
 }

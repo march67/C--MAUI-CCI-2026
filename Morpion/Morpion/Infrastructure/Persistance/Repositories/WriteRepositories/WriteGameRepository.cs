@@ -1,8 +1,9 @@
 ﻿using Morpion.Domain.Entities;
+using Morpion.Domain.Repositories.Game;
 
 namespace Morpion.Infrastructure.Persistance.Repositories;
 
-public class WriteGameRepository
+public class WriteGameRepository : IWriteGameRepository
 {
     private readonly ApplicationDbContext _dbContext;
     
@@ -11,9 +12,15 @@ public class WriteGameRepository
         _dbContext = dbContext;
     }
 
-    public async void SaveAsync(Game game)
+    public async Task SaveAsync(Game game)
     {
-        _dbContext.Games.AddAsync(game);
+        await _dbContext.Games.AddAsync(game);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Game game) 
+    {
+        _dbContext.Games.Update(game);
         await _dbContext.SaveChangesAsync();
     }
 }

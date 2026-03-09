@@ -12,10 +12,11 @@ public class WritePlayerRepository : IWritePlayerRepository
         _dbContext = dbContext;
     }
     
-    public void SaveAsync(Player player)
+    public async Task<Player> SaveAsync(Player player)
     {
-        _dbContext.Players.Add(player);
-        _dbContext.SaveChanges();
+        await _dbContext.Players.AddAsync(player);
+        await _dbContext.SaveChangesAsync();
+        return  player;
     }
     
     
