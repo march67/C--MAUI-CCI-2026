@@ -29,7 +29,7 @@ namespace Morpion.test
         }
     }
 
-    public class GameTests
+    public class GameManagerTests
     {
         [Fact]
         public void InitializeTwoHumanPlayers_WithValidInputs_ShouldCreateTwoPlayers()
@@ -42,7 +42,7 @@ namespace Morpion.test
                 "Alice",    // joueur 2
                 "O"
             );
-            var game = new Game(fakeConsole);
+            var game = new GameManager(fakeConsole);
 
             // Act
             game.InitializeTwoHumanPlayers();
@@ -64,7 +64,7 @@ namespace Morpion.test
                 // premier readline => David
                 // deuxième readline => X
                 // etc.
-            var game = new Game(fakeConsole);
+            var game = new GameManager(fakeConsole);
 
             // Act
             game.InitializeTwoHumanPlayers();

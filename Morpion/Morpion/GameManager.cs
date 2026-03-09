@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Morpion
 {
-    public class Game
+    public class GameManager
     {
         private readonly IConsoleWrapper _console;
         private bool IsFirstTurnOfTheGame = true;
@@ -14,7 +14,7 @@ namespace Morpion
         public List<IPlayer> PlayerList = new List<IPlayer>();
         bool Restart = false;
 
-        public Game(IConsoleWrapper console)
+        public GameManager(IConsoleWrapper console)
         {
             _console = console;
         }

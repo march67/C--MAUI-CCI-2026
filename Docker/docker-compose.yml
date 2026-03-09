@@ -1,0 +1,21 @@
+services:
+  dbMorpion:
+    image: postgres:latest
+    working_dir: /user
+    volumes:
+      - dbMorpion-data:/user
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${DB_PORT}:5432"
+    networks:
+      - network_1
+
+volumes:
+  dbMorpion-data:
+
+networks:
+  network_1:
+    driver: bridge
