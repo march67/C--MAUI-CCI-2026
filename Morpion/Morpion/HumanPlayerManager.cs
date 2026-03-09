@@ -33,7 +33,7 @@ namespace Morpion
             return this.HumanSymbol;
         }
 
-        public async Task<(int, int, char)> PlayerInput(Board board)
+        public async Task<(int, int, char)> PlayerInput(BoardManager boardManager)
         {
             await Task.CompletedTask;
 
@@ -55,7 +55,7 @@ namespace Morpion
                 {
                     Console.Write("Saisie invalide. Entrez la colonne : ");
                 }
-            } while (!board.CheckValidCellForInput(rowInput - 1, columnInput - 1, this));
+            } while (!boardManager.CheckValidCellForInput(rowInput - 1, columnInput - 1, this));
 
             Console.WriteLine("\nVeuillez choisir une cellule vide");
 

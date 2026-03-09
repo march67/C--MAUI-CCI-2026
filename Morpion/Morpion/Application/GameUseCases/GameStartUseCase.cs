@@ -16,14 +16,8 @@ public class GameStartUseCase
 
     public async Task<Game> CreateGame(Game game)
     {
-        Game ongoingGame = await _readGameRepository.FindOngoingGame();
-        if (ongoingGame == null)
-        {
-            await _writeGameRepository.SaveAsync(game);
-            return game;
-        }
-        
-        return ongoingGame;
+        await _writeGameRepository.SaveAsync(game);
+        return game;
     }
 
     public async Task UpdateGame(Game game)
@@ -35,13 +29,18 @@ public class GameStartUseCase
     {
         int winCountPlayer1 = await _readGameRepository.NumberOfGamePlayedByPlayer(player1);
         int winCountPlayer2 = await _readGameRepository.NumberOfGamePlayedByPlayer(player2);
+
+        decimal ratioWinAgainstBotPlayer1 = await _readGameRepository.PourcentageOfGameWonByPlayerAgainstBot(player1);
+        decimal ratioWinAgainstBotPlayer2 = await _readGameRepository.PourcentageOfGameWonByPlayerAgainstBot(player2);
         
-        Console.WriteLine($"Nombre de partie jouées par " + player1.Name + " : " + winCountPlayer1);
-        Console.WriteLine($"Nombre de partie jouées par " + player2.Name + " : " + winCountPlayer2);
+        Console.WriteLine($"Nombre de partie jouées par " + player1.Name + " : " + winCountPlayer1
+                          + " son ratio de victoire contre des bots est de " + ratioWinAgainstBotPlayer1);
+        Console.WriteLine($"Nombre de partie jouées par " + player2.Name + " : " + winCountPlayer2
+                          +  " son ratio de " + ratioWinAgainstBotPlayer2);
     }
 
-    public void RetrieveOngoingGameState(Game game)
+    public async Task<Game> FindOngoingGame()
     {
-        // to do
+        return await _readGameRepository.FindOngoingGame();
     }
 }

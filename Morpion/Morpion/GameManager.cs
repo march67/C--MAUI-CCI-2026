@@ -27,24 +27,90 @@ namespace Morpion
 
         public async Task StartGame()
         {
-            await ChooseTypeOfGame();
-
-            Board board = new Board();
-
-            RandomizePlayerTurn(PlayerList);
-
-            board.DisplayBoard();
-
-            while (!board.CheckWinCondition(_currentPlayerManagerToPlay.GetPlayerName()) && !board.CheckDraw())
+            var ongoingGame = await _gameStartUseCase.FindOngoingGame();
+            if (ongoingGame != null)
             {
-                ChangePlayerTurn();
-                board.InputMoveOnBoard(await _currentPlayerManagerToPlay.PlayerInput(board));
-                board.DisplayBoard();
+                await ResumeExistingGame(ongoingGame);
             }
-
-            await RecordGameResult(board);
+            
+            await StartNewGame();
 
             GameEnded();
+        }
+
+        private async Task ResumeExistingGame(Game ongoingGame)
+        {
+            _currentGame = ongoingGame;
+            Player1 = ongoingGame.Winner;
+            Player2 = ongoingGame.Loser;
+    
+            if (Player1.IsHuman)
+            {
+                PlayerList.Add(new HumanPlayerManager 
+                { 
+                    HumanName = Player1.Name, 
+                    HumanSymbol = ongoingGame.Player1Symbol ?? 'X'  // Valeur par défaut
+                });
+            }
+            else
+            {
+                PlayerList.Add(new BotPlayerManager 
+                { 
+                    BotName = Player1.Name, 
+                    BotSymbol = ongoingGame.Player1Symbol ?? 'O'
+                });
+            }
+    
+            if (Player2.IsHuman)
+            {
+                PlayerList.Add(new HumanPlayerManager 
+                { 
+                    HumanName = Player2.Name, 
+                    HumanSymbol = ongoingGame.Player2Symbol ?? 'O'
+                });
+            }
+            else
+            {
+                PlayerList.Add(new BotPlayerManager 
+                { 
+                    BotName = Player2.Name, 
+                    BotSymbol = ongoingGame.Player2Symbol ?? 'X'
+                });
+            }
+            
+            Console.WriteLine("Reprise de la partie " + ongoingGame.Id);
+
+            await PlayGame();
+        }
+
+        private async Task StartNewGame()
+        {
+            await ChooseTypeOfGame();
+            await PlayGame();
+        }
+
+        private async Task PlayGame()
+        {
+            await _gameStartUseCase.ShowPlayersResult(_currentGame.Winner, _currentGame.Loser);
+            
+            BoardManager boardManager = new BoardManager();
+
+            if (_currentGame.BoardState != null) boardManager.board = _currentGame.LoadBoardState();
+            
+            RandomizePlayerTurn(PlayerList);
+
+            boardManager.DisplayBoard();
+
+            while (!boardManager.CheckWinCondition(_currentPlayerManagerToPlay.GetPlayerName()) && !boardManager.CheckDraw())
+            {
+                ChangePlayerTurn();
+                boardManager.InputMoveOnBoard(await _currentPlayerManagerToPlay.PlayerInput(boardManager));
+                _currentGame.SaveBoardState(boardManager.board);
+                await _gameStartUseCase.UpdateGame(_currentGame);
+                boardManager.DisplayBoard();
+            }
+
+            await RecordGameResult(boardManager);
         }
 
         private async Task ChooseTypeOfGame()
@@ -114,7 +180,7 @@ namespace Morpion
             PlayerList.Add(new HumanPlayerManager { HumanName = playerName_1, HumanSymbol = playerSymbol_1 });
             PlayerList.Add(new HumanPlayerManager { HumanName = playerName_2, HumanSymbol = playerSymbol_2 });
             
-            _currentGame = Game.Create(Player1, Player2);
+            _currentGame = Game.Create(Player1, Player2, playerSymbol_1, playerSymbol_2);
             _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
             await _gameStartUseCase.ShowPlayersResult(Player1, Player2);
         }
@@ -150,13 +216,12 @@ namespace Morpion
             
             Player2 = Player.Create(botName, false);
             Player2 = await _playerRegisterUseCase.Save(Player2);
-
+            
+            _currentGame = Game.Create(Player1, Player2, playerSymbol_1, botSymbol);
+            _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
+            
             PlayerList.Add(new HumanPlayerManager { HumanName = playerName_1, HumanSymbol = playerSymbol_1 });
             PlayerList.Add(new BotPlayerManager { BotName = botName, BotSymbol  = botSymbol });
-            
-            _currentGame = Game.Create(Player1, Player2);
-            _currentGame = await _gameStartUseCase.CreateGame(_currentGame);
-            await _gameStartUseCase.ShowPlayersResult(Player1, Player2);
         }
 
         public void GameEnded()
@@ -203,9 +268,9 @@ namespace Morpion
             _currentPlayerManagerToPlay = playerList[index];
         }
         
-        private async Task RecordGameResult(Board board)
+        private async Task RecordGameResult(BoardManager boardManager)
         {
-            if (board.HasWinner())
+            if (boardManager.HasWinner())
             {
                 var winnerName = _currentPlayerManagerToPlay.GetPlayerName();
 
@@ -223,13 +288,9 @@ namespace Morpion
                 }
         
                 _currentGame.SetResult(winnerEntity, loserEntity);
+                _currentGame.SaveBoardState(boardManager.board);
                 await _gameStartUseCase.UpdateGame(_currentGame);
             }
-        }
-
-        private async Task ShowPlayersResult()
-        {
-            
         }
     }
 }

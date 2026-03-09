@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Morpion
+﻿namespace Morpion
 {
-    public class Board
+    public class BoardManager
     {
         const string VerticalSeparator = "|";
         const string HorizontalSeparator = "------";
 
         public char[,] board;
 
-        public Board()
+        public BoardManager()
         {
             board = new char[3, 3];
 

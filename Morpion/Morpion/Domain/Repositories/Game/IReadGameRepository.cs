@@ -6,5 +6,5 @@ public interface IReadGameRepository
     
     Task<int> NumberOfGamePlayedByPlayer(Entities.Player player);
     
-    Task<int> NumberOfGameWonByPlayer(Entities.Player player);
+    Task<decimal> PourcentageOfGameWonByPlayerAgainstBot(Entities.Player player);
 }

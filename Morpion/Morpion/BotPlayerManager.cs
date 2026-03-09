@@ -33,7 +33,7 @@ namespace Morpion
             return this.BotSymbol;
         }
 
-        public async Task<(int, int, char)> PlayerInput(Board boardGame)
+        public async Task<(int, int, char)> PlayerInput(BoardManager boardManagerGame)
         {
             int rowInput;
             int columnInput;
@@ -44,10 +44,10 @@ namespace Morpion
 
             do
             {
-                rowInput = random.Next(boardGame.board.GetLength(0));
-                columnInput = random.Next(boardGame.board.GetLength(1));
+                rowInput = random.Next(boardManagerGame.board.GetLength(0));
+                columnInput = random.Next(boardManagerGame.board.GetLength(1));
 
-            } while (!boardGame.CheckValidCellForInput(rowInput, columnInput, this));
+            } while (!boardManagerGame.CheckValidCellForInput(rowInput, columnInput, this));
 
             Console.WriteLine($"\nLAISSE " + GetPlayerName() + " RÉFLÉCHIR !" +
                 "");

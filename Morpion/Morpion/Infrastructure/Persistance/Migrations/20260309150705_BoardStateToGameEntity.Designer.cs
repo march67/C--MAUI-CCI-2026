@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Morpion.Infrastructure.Persistance;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Morpion.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260309150705_BoardStateToGameEntity")]
+    partial class BoardStateToGameEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,12 +39,6 @@ namespace Morpion.Migrations
 
                     b.Property<Guid>("LoserId")
                         .HasColumnType("uuid");
-
-                    b.Property<char?>("Player1Symbol")
-                        .HasColumnType("character(1)");
-
-                    b.Property<char?>("Player2Symbol")
-                        .HasColumnType("character(1)");
 
                     b.Property<Guid>("WinnerId")
                         .HasColumnType("uuid");
