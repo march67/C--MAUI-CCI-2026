@@ -39,12 +39,12 @@
 
         private bool CheckWin()
         {
-            Button[] cases = new Button[9];
+            Button[] cell = new Button[9];
             int index = 0;
-            foreach (var child in GrilleMorpion.Children)
+            foreach (var child in GrilleMorpion.Children) // ordre = de haut en bas, de gauche à droite
             {
                 if (child is Button b)
-                    cases[index++] = b;
+                    cell[index++] = b;
             }
 
             // Les 8 combinaisons gagnantes
@@ -62,9 +62,9 @@
 
             foreach (var combo in combinaisons)
             {
-                string a = cases[combo[0]].Text;
-                string b = cases[combo[1]].Text;
-                string c = cases[combo[2]].Text;
+                string a = cell[combo[0]].Text;
+                string b = cell[combo[1]].Text;
+                string c = cell[combo[2]].Text;
 
                 if (!string.IsNullOrEmpty(a) && a == b && b == c)
                     return true;
