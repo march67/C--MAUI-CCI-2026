@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp1.MainPage"
+             Title="Morpion">
+
+    <VerticalStackLayout Spacing="20" VerticalOptions="Center" HorizontalOptions="Center">
+
+        <Label x:Name="LabelStatus"
+               Text="Tour de X"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="White" />
+
+        <Grid x:Name="GrilleMorpion"
+              RowDefinitions="100,100,100"
+              ColumnDefinitions="100,100,100"
+              RowSpacing="5"
+              ColumnSpacing="5"
+              HorizontalOptions="Center">
+
+            <Button Grid.Row="0" Grid.Column="0" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White"/>
+            <Button Grid.Row="0" Grid.Column="1" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="0" Grid.Column="2" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+
+            <Button Grid.Row="1" Grid.Column="0" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="1" Grid.Column="1" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="1" Grid.Column="2" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+
+            <Button Grid.Row="2" Grid.Column="0" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="2" Grid.Column="1" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="2" Grid.Column="2" Clicked="OnCellClick"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+        </Grid>
+
+        <Button x:Name="BoutonRejouer"
+                Text="Rejouer"
+                Clicked="OnReplayClick"
+                FontSize="20"
+                TextColor="White"
+                CornerRadius="10"
+                WidthRequest="200"
+                HeightRequest="50"
+                HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
