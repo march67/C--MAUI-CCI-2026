@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MauiApp1.Interfaces;
+using MauiApp1.Models;
+using MauiApp1.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,97 +14,132 @@ namespace MauiApp1.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        private readonly IGameHistory _gameHistory;
+        private readonly IBotService _botService;
+        private readonly Board _board;
+        private bool _gameEnded = false;
+
+        // Le joueur humain joue toujours X, le bot joue O
+        private const string HumanSymbol = "X";
+        private const string BotSymbol = "O";
+
+        public string Cell0 => _board.GetCell(0);
+        public string Cell1 => _board.GetCell(1);
+        public string Cell2 => _board.GetCell(2);
+        public string Cell3 => _board.GetCell(3);
+        public string Cell4 => _board.GetCell(4);
+        public string Cell5 => _board.GetCell(5);
+        public string Cell6 => _board.GetCell(6);
+        public string Cell7 => _board.GetCell(7);
+        public string Cell8 => _board.GetCell(8);
+
+        private void NotifyCell(int index) =>
+         OnPropertyChanged($"Cell{index}");
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        private readonly string[] _board = new string[9];
-        private bool _playerTurnX = true;
-        private bool _gameEnded = false;
-
-        public string Cell0 { get => _board[0]; private set { _board[0] = value; OnPropertyChanged(); } }
-        public string Cell1 { get => _board[1]; private set { _board[1] = value; OnPropertyChanged(); } }
-        public string Cell2 { get => _board[2]; private set { _board[2] = value; OnPropertyChanged(); } }
-        public string Cell3 { get => _board[3]; private set { _board[3] = value; OnPropertyChanged(); } }
-        public string Cell4 { get => _board[4]; private set { _board[4] = value; OnPropertyChanged(); } }
-        public string Cell5 { get => _board[5]; private set { _board[5] = value; OnPropertyChanged(); } }
-        public string Cell6 { get => _board[6]; private set { _board[6] = value; OnPropertyChanged(); } }
-        public string Cell7 { get => _board[7]; private set { _board[7] = value; OnPropertyChanged(); } }
-        public string Cell8 { get => _board[8]; private set { _board[8] = value; OnPropertyChanged(); } }
-
-        private string _statusText = "Tour de X";
+        private string _statusText = "Votre tour (X)";
         public string StatusText
         {
             get => _statusText;
             private set { _statusText = value; OnPropertyChanged(); }
         }
 
+        public string RecordText
+        {
+            get { return _gameHistory.DisplayHistory(); }
+        }
+
         public ICommand CellClickCommand { get; }
         public ICommand ReplayCommand { get; }
 
-        public MainViewModel()
+        public MainViewModel(IBotService botService, IGameHistory gameHistory)
         {
+            _gameHistory = gameHistory;
+            _botService = botService;
+            _board = new Board();
             CellClickCommand = new Command<string>(ExecuteCellClick);
             ReplayCommand = new Command(ExecuteReplay);
         }
+
 
         private void ExecuteCellClick(string indexStr)
         {
             if (_gameEnded) return;
             if (!int.TryParse(indexStr, out int index)) return;
-            if (!string.IsNullOrEmpty(_board[index])) return;
+            if (!_board.IsCellEmpty(index)) return;
 
-            string symbole = _playerTurnX ? "X" : "O";
+            // Human inp
+            _board.SetCell(index, HumanSymbol);
+            NotifyCell(index);
 
-            SetCell(index, symbole);
+            if (CheckEndGame(HumanSymbol)) return;
 
-            if (CheckWin(symbole))
+            // Bot inp
+            StatusText = "Tour du bot...";
+            int botIndex = _botService.ChooseCell(_board, BotSymbol);
+
+            if (botIndex == -1) return;
+
+            _board.SetCell(botIndex, BotSymbol);
+            NotifyCell(botIndex);
+
+            CheckEndGame(BotSymbol);
+        }
+
+        private bool CheckEndGame(string symbol)
+        {
+            if (_board.CheckWin(symbol))
             {
-                StatusText = $"{symbole} a gagné !";
+                StatusText = symbol;
+                if (StatusText == HumanSymbol)
+                {
+                    Console.WriteLine("Vous avez gagné !");
+                    _gameHistory.RecordWin();
+                    OnPropertyChanged(nameof(RecordText));
+                }
+                else
+                {
+                    Console.WriteLine("Le bot a gagné !");
+                    _gameHistory.RecordLoss();
+                    OnPropertyChanged(nameof(RecordText));
+                }
+                
                 _gameEnded = true;
+                
+                return true;
             }
-            else if (CheckDraw())
+
+            if (_board.CheckDraw())
             {
                 StatusText = "Match nul !";
                 _gameEnded = true;
+                _gameHistory.RecordDraw();
+                OnPropertyChanged(nameof(RecordText));
+                return true;
             }
-            else
-            {
-                _playerTurnX = !_playerTurnX;
-                StatusText = $"Tour de {(_playerTurnX ? "X" : "O")}";
-            }
+
+            if (symbol == BotSymbol)
+                StatusText = "Votre tour X";
+
+            return false;
         }
+
         private void ExecuteReplay()
         {
+            _board.Reset();
+
             for (int i = 0; i < 9; i++)
-                SetCell(i, string.Empty);
+                NotifyCell(i);
 
-            _playerTurnX = true;
+            //_playerTurnX = true;
             _gameEnded = false;
-            StatusText = "Tour de X";
+            StatusText = "Votre tour X";
         }
 
-        private void SetCell(int index, string value)
-        {
-            _board[index] = value;
-            OnPropertyChanged($"Cell{index}");
-        }
 
-        private bool CheckWin(string symbol) =>
-            (_board[0] == symbol && _board[1] == symbol && _board[2] == symbol) ||
-            (_board[3] == symbol && _board[4] == symbol && _board[5] == symbol) ||
-            (_board[6] == symbol && _board[7] == symbol && _board[8] == symbol) ||
-            (_board[0] == symbol && _board[3] == symbol && _board[6] == symbol) ||
-            (_board[1] == symbol && _board[4] == symbol && _board[7] == symbol) ||
-            (_board[2] == symbol && _board[5] == symbol && _board[8] == symbol) ||
-            (_board[0] == symbol && _board[4] == symbol && _board[8] == symbol) ||
-            (_board[2] == symbol && _board[4] == symbol && _board[6] == symbol);
-
-        private bool CheckDraw()
-        {
-            foreach (var c in _board)
-                if (string.IsNullOrEmpty(c)) return false;
-            return true;
-        }
     }
 }

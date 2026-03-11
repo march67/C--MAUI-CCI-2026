@@ -6,14 +6,22 @@
              Title="Morpion">
 
 
+    <!-- Géré dans le code-behind
     <ContentPage.BindingContext>
         <vm:MainViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>--> 
 
     <VerticalStackLayout Spacing="20" VerticalOptions="Center" HorizontalOptions="Center">
 
+        <Label
+               Text="{Binding RecordText}"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="White" />
+        
         <Label 
-               Text="Tour de X"
+               Text="{Binding StatusText}"
                FontSize="28"
                FontAttributes="Bold"
                HorizontalOptions="Center"
