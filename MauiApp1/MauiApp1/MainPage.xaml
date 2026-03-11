@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp1.ViewModels"
+             x:Class="MauiApp1.MainPage"
+             Title="Morpion">
+
+
+    <!-- Géré dans le code-behind
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>--> 
+
+    <VerticalStackLayout Spacing="20" VerticalOptions="Center" HorizontalOptions="Center">
+
+        <Label
+               Text="{Binding RecordText}"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="White" />
+        
+        <Label 
+               Text="{Binding StatusText}"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="White" />
+
+        <Grid 
+              RowDefinitions="100,100,100"
+              ColumnDefinitions="100,100,100"
+              RowSpacing="5"
+              ColumnSpacing="5"
+              HorizontalOptions="Center">
+
+            <Button Grid.Row="0" Grid.Column="0"
+                    Text="{Binding Cell0}"
+                    Command="{Binding CellClickCommand}" CommandParameter="0"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White"/>
+            <Button Grid.Row="0" Grid.Column="1"
+                    Text="{Binding Cell1}"
+                    Command="{Binding CellClickCommand}" CommandParameter="1"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="0" Grid.Column="2" 
+                    Text="{Binding Cell2}"
+                    Command="{Binding CellClickCommand}" CommandParameter="2"
+                    FontSize="40" FontAttributes="Bold"
+                    BackgroundColor="#16213e" TextColor="White" />
+
+            <Button Grid.Row="1" Grid.Column="0" 
+                    FontSize="40" FontAttributes="Bold"
+                    Text="{Binding Cell3}"
+                    Command="{Binding CellClickCommand}" CommandParameter="3"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="1" Grid.Column="1" 
+                    FontSize="40" FontAttributes="Bold"
+                    Text="{Binding Cell4}"
+                    Command="{Binding CellClickCommand}" CommandParameter="4"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="1" Grid.Column="2" 
+                    FontSize="40" FontAttributes="Bold"
+                    Text="{Binding Cell5}"
+                    Command="{Binding CellClickCommand}" CommandParameter="5"
+                    BackgroundColor="#16213e" TextColor="White" />
+
+            <Button Grid.Row="2" Grid.Column="0" 
+                    FontSize="40" FontAttributes="Bold"
+                    Text="{Binding Cell6}"
+                    Command="{Binding CellClickCommand}" CommandParameter="6"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="2" Grid.Column="1" 
+                    FontSize="40" FontAttributes="Bold"
+                    Text="{Binding Cell7}"
+                    Command="{Binding CellClickCommand}" CommandParameter="7"
+                    BackgroundColor="#16213e" TextColor="White" />
+            <Button Grid.Row="2" Grid.Column="2" 
+                    FontSize="40" FontAttributes="Bold"
+                    Text="{Binding Cell8}"
+                    Command="{Binding CellClickCommand}" CommandParameter="8"
+                    BackgroundColor="#16213e" TextColor="White" />
+        </Grid>
+
+        <Button
+                Text="Rejouer"
+                Command="{Binding ReplayCommand}"
+                FontSize="20"
+                TextColor="White"
+                CornerRadius="10"
+                WidthRequest="200"
+                HeightRequest="50"
+                HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
