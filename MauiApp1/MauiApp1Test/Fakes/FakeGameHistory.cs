@@ -1,4 +1,4 @@
-﻿using MauiApp1Test.IFakes;
+﻿using MauiApp1.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +24,11 @@ namespace MauiApp1Test.Fakes
         public void RecordDraw()
         {
             Draws++;
+        }
+
+        public string DisplayHistory()
+        {
+            return $"Nb de victoires : " + Wins + " Nb de défaites : " + Losses + " Nb de matchs nuls : " + Draws;
         }
     }
 }

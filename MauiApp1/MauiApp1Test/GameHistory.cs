@@ -1,4 +1,6 @@
 ﻿using MauiApp1.Services;
+using MauiApp1.ViewModels;
+using MauiApp1Test.Fakes;
 
 namespace MauiApp1Test
 {
@@ -7,15 +9,18 @@ namespace MauiApp1Test
         [Fact]
         public void Win_Increments_Counter()
         {
+            // prep
             var history = new FakeGameHistory();
-            var vm = new MainViewModel(botService, fakeHistory);
+            var iBotService = new RandomBotService();
+            var vm = new MainViewModel(iBotService, history);
 
-            // Human win
+            // ligne win
             vm.CellClickCommand.Execute("0");
             vm.CellClickCommand.Execute("1");
             vm.CellClickCommand.Execute("2");
 
-            Assert.Equal(1, fakeHistory.Wins);
+            // asserts
+            Assert.Equal(1, history.Wins);
         }
     }
 }
